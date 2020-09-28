@@ -17,9 +17,14 @@
     <p class="text-sm text-gray-700">
         {{ $post->formatted_type }} –
         <a href="{{ $post->url }}">
-            <time datetime="{{ optional($post->publish_date)->format(DateTime::ATOM) }}">
-                {{ optional($post->publish_date)->format('M jS Y') }}
-            </time>
+            @if ($post->publish_date)
+                <time datetime="{{ optional($post->publish_date)->format(DateTime::ATOM) }}">
+                    {{ optional($post->publish_date)->format('M jS Y') }}
+                </time>
+
+            @else
+                This post has not been published yet
+            @endif
         </a>
         @if($post->external_url)
             –
@@ -33,9 +38,11 @@
             - submitted by {{ $post->submittedByUser->name }}
         @endif
         @auth
-            –
-            <a target="_blank" href="/nova/resources/posts/{{ $post->id }}/edit">
-                Edit</a>
+            @if(Auth::user()->admin)
+                –
+                <a target="_blank" href="/nova/resources/posts/{{ $post->id }}/edit">
+                    Edit</a>
+            @endif
         @endauth
     </p>
     </header>
